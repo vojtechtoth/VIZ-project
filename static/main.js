@@ -304,11 +304,10 @@ function applyScatterFilter() {
         .raise();
 }
 
-// ─── Canvas ──────────────────────────────────────────────────────────────────
+// Canvas
 
 let isDrawing = false;
 let ctx;
-// FIX 3: track whether anything has been drawn so we can guard the Infer button
 let canvasHasContent = false;
 
 function setupCanvas() {
@@ -324,7 +323,6 @@ function setupCanvas() {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // FIX 2: use getAttribute to get the pixel integer, not the CSS value
     const getPos = (e) => {
         const rect = canvas.getBoundingClientRect();
         const pixelW = parseInt(canvas.getAttribute('width'),  10);
@@ -376,21 +374,18 @@ function setupCanvas() {
     document.getElementById('clear-btn').addEventListener('click', () => {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        canvasHasContent = false; // FIX 5: reset page state on clear
+        canvasHasContent = false;
 
-        // FIX 5: reset feature map pagination
         fmapPages = { conv2d_1: 0, conv2d_2: 0 };
 
         document.getElementById('bar-chart-container').innerHTML = '';
         document.getElementById('feature-maps-container').innerHTML = '';
 
-        // FIX 4: hide the static gradcam container instead of removing dynamic one
         const camContainer = document.getElementById('gradcam-container');
         camContainer.style.display = 'none';
     });
 
     document.getElementById('submit-btn').addEventListener('click', () => {
-        // FIX 3: guard — don't fire requests on a blank canvas
         if (!canvasHasContent) return;
         performInference();
     });
@@ -402,7 +397,6 @@ async function performInference() {
     const dataURL = canvas.toDataURL('image/png');
     
     try {
-        // Run both backend requests concurrently to keep things snappy
         const [predRes, camRes] = await Promise.all([
             fetch('/predict', {
                 method: 'POST',
@@ -431,7 +425,7 @@ async function performInference() {
     }
 }
 
-// ─── Render helpers ───────────────────────────────────────────────────────────
+// Render helpers
 
 function renderBarChart(predictions) {
     const container = document.getElementById('bar-chart-container');
@@ -639,7 +633,6 @@ function renderFeatureMaps() {
     });
 }
 
-// FIX 4: renderGradCAM writes into the static HTML elements, never appends
 function renderGradCAM(cam, inputImage) {
     const container = document.getElementById('gradcam-container');
     container.style.display = 'block';
@@ -649,8 +642,6 @@ function renderGradCAM(cam, inputImage) {
     document.getElementById('gradcam-label').textContent =
         `Class ${cam.class_index} · predicted: ${cam.predicted_label}`;
 }
-
-// ─── Controls ─────────────────────────────────────────────────────────────────
 
 function setupControls() {
     const epochSlider   = document.getElementById('epoch-slider');
@@ -682,7 +673,7 @@ function setupControls() {
     resetFilterBtn.addEventListener('click', clearFilter);
 }
 
-// ─── Resize ───────────────────────────────────────────────────────────────────
+// resize
 
 window.addEventListener('resize', () => {
     const sc = document.getElementById('scatter-container');
