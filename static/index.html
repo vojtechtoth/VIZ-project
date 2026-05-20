@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNN MNIST Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="global-header-strip">
+        <div class="header-toolbar-box glass-panel">
+            <div class="control-item flex-1">
+                <label for="projection-select">Projection</label>
+                <div class="select-wrapper">
+                    <select id="projection-select">
+                        <option value="tsne">t-SNE</option>
+                        <option value="pca">PCA</option>
+                        <option value="star">Star Coordinates</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-item flex-2">
+                <label for="epoch-slider">Epoch: <span id="epoch-display" class="highlight-text">15</span></label>
+                <div class="slider-container">
+                    <input type="range" id="epoch-slider" min="0" max="5" value="5" step="1">
+                    <div class="slider-labels">
+                        <span>0</span><span>1</span><span>3</span><span>5</span><span>10</span><span>15</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-title-box glass-panel">
+            <h1>CNN Internals: MNIST Feature Space</h1>
+            <button id="theme-toggle" class="btn btn-outline" title="Toggle Theme">🌙</button>
+        </div>
+    </header>
+
+       <div class="app-container">
+
+            <aside class="left-column">
+                <section class="glass-panel global-view">
+                    <header class="panel-header">
+                        <h2>Global Feature Space</h2>
+                        <span class="subtitle">Overview of the 10D manifold</span>
+                    </header>
+                    <div id="scatter-container" class="vis-container"></div>
+                </section>
+
+                <section class="glass-panel diagnostic-view">
+                    <header class="panel-header" style="display:flex; align-items:flex-start; justify-content:space-between;">
+                        <div>
+                            <h2>Confusion Matrix</h2>
+                            <span class="subtitle">Click a cell to filter the scatter plot</span>
+                        </div>
+                        <button id="reset-filter-btn" class="btn btn-outline"
+                                style="display:none; font-size:0.75rem; padding:0.3rem 0.6rem; flex-shrink:0;">
+                            ✕ Clear filter
+                        </button>
+                    </header>
+                    <div id="matrix-container" class="vis-container"></div>
+                </section>
+            </aside>
+
+            <main class="middle-column">
+                <section class="glass-panel flow-view">
+                    <header class="panel-header">
+                        <h2>Model Flow Diagram</h2>
+                        <span class="subtitle">Inspecting real-time kernel & network layers</span>
+                    </header>
+                    <div id="feature-maps-container" class="flow-scroll-area"></div>
+                </section>
+            </main>
+
+            <aside class="right-column-stack">
+                <section class="glass-panel interactive-instrument-card">
+                    
+                    <div class="sandbox-block">
+                        <h3>Digit Canvas</h3>
+                        <div class="canvas-wrapper">
+                            <canvas id="drawing-canvas" width="140" height="140"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="canvas-actions">
+                        <button id="clear-btn" class="btn btn-outline">Clear</button>
+                        <button id="submit-btn" class="btn btn-primary">Infer →</button>
+                    </div>
+
+                    <hr class="panel-divider">
+
+                    <div class="sandbox-block flex-grow-chart">
+                        <h3>Confidence</h3>
+                        <div id="bar-chart-container" class="vis-container bar-chart-box"></div>
+                    </div>
+
+                    <div id="gradcam-container" class="sandbox-block gradcam-box" style="display:none;">
+                        <h3>Grad-CAM</h3>
+                        <div class="gradcam-overlay-wrap">
+                            <img id="gradcam-input" class="gradcam-layer gradcam-base">
+                            <img id="gradcam-heatmap" class="gradcam-layer gradcam-heat">
+                        </div>
+                        <p id="gradcam-label" class="gradcam-label"></p>
+                    </div>
+
+                </section>
+            </aside>
+
+        </div>
+    <script src="main.js"></script>
+</body>
+</html>
