@@ -8,7 +8,7 @@ def load():
     global main_model, activation_model, gradcam_model
     main_model = tf.keras.models.load_model('mnist_cnn.keras')
 
-    last_conv = main_model.get_layer('conv2d_2')  # name it in build_model()
+    last_conv = main_model.get_layer('conv2d_2')
     activation_model = tf.keras.Model(
         inputs=main_model.input,
         outputs=[
