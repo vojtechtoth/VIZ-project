@@ -28,6 +28,15 @@ async def gradcam_endpoint(request: GradCAMRequest):
         raise HTTPException(status_code=500, detail="Model not loaded.")
     return gradcam.run_gradcam(request.image, request.class_index)
 
+@app.post("/get_kernel_weights")
+async def get_kernel_weights(payload: dict):
+    layer_name = payload.get("layer_name")
+    kernel_idx = int(payload.get("kernel_idx"))
+    
+    # Hand off execution to your clean service layer function
+    result = inference.run_get_kernel_weights(layer_name, kernel_idx)
+    return result
+
 @app.get("/data.json")
 async def get_data():
     if not os.path.exists("data.json"):
