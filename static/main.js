@@ -845,7 +845,7 @@ async function fetchKernelWeights(layerName, kernelIdx, anchorElement) {
             channelWrapper.appendChild(chLabel);
             matrixGrid.appendChild(channelWrapper);
         });
-c
+
         matrixScrollWrapper.appendChild(matrixGrid);
         card.appendChild(matrixScrollWrapper);
         document.body.appendChild(card);
